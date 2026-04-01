@@ -7,8 +7,15 @@ if (!ENV.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set in environment variables");
 }
 
-// initialize PostgreSQL connection pool
-const pool = new Pool({ connectionString: ENV.DATABASE_URL });
+// initialize PostgreSQL connection pool with SSL
+const pool = new Pool({ 
+  connectionString: ENV.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 30000,
+});
 
 // log when first connection is made
 pool.on("connect", () => {
