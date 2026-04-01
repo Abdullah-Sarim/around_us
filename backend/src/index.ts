@@ -21,7 +21,7 @@ const app = express();
 app.use(cors({ 
   origin: [
     ENV.FRONTEND_URL,
-    "https://around-us-frontend.onrender.com",
+    "https://your-vercel-frontend.vercel.app",
     "http://localhost:5173",
     "http://localhost:3000"
   ], 
