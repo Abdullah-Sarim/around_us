@@ -18,7 +18,15 @@ import { products } from "./db/schema";
 
 const app = express();
 
-app.use(cors({ origin: ENV.FRONTEND_URL, credentials: true }));
+app.use(cors({ 
+  origin: [
+    ENV.FRONTEND_URL,
+    "https://around-us-frontend.onrender.com",
+    "http://localhost:5173",
+    "http://localhost:3000"
+  ], 
+  credentials: true 
+}));
 // `credentials: true` allows the frontend to send cookies to the backend so that we can authenticate the user.
 app.use(clerkMiddleware()); // auth obj will be attached to the req
 app.use(express.json()); // parses JSON request bodies.
@@ -49,17 +57,15 @@ app.get("/test2", (req, res) => {
   res.json({ message: "test2 works" });
 });
 
-if (ENV.NODE_ENV === "production") {
-  const __dirname = path.resolve();
-
-  // serve static files from frontend/dist
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
-  // handle SPA routing - send all non-API routes to index.html - react app
-  app.get("/{*any}", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
-  });
-}
+// if (ENV.NODE_ENV === "production") {
+//   const __dirname = path.resolve();
+//   // serve static files from frontend/dist
+//   app.use(express.static(path.join(__dirname, "../frontend/dist")));
+//   // handle SPA routing - send all non-API routes to index.html - react app
+//   app.get("/{*any}", (req, res) => {
+//     res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+//   });
+// }
 
 // Cleanup old sold products (older than 7 days)
 const cleanupSoldProducts = async () => {
