@@ -20,11 +20,10 @@ const app = express();
 
 app.use(cors({ 
   origin: [
-    ENV.FRONTEND_URL,
-    "https://your-vercel-frontend.vercel.app",
+    ENV.FRONTEND_URL || "",
     "http://localhost:5173",
     "http://localhost:3000"
-  ], 
+  ].filter(Boolean), 
   credentials: true 
 }));
 // `credentials: true` allows the frontend to send cookies to the backend so that we can authenticate the user.
