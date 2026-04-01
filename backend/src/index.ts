@@ -18,12 +18,18 @@ import { products } from "./db/schema";
 
 const app = express();
 
+const corsOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
+
+// Add production frontend if FRONTEND_URL is set
+if (ENV.FRONTEND_URL) {
+  corsOrigins.push(ENV.FRONTEND_URL);
+}
+
 app.use(cors({ 
-  origin: [
-    ENV.FRONTEND_URL || "",
-    "http://localhost:5173",
-    "http://localhost:3000"
-  ].filter(Boolean), 
+  origin: corsOrigins, 
   credentials: true 
 }));
 // `credentials: true` allows the frontend to send cookies to the backend so that we can authenticate the user.
