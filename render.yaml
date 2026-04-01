@@ -3,9 +3,11 @@ services:
     name: backend
     rootDir: backend
     buildCommand: npm install && npm run build
-    startCommand: npm run start
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 3000
+      - key: FRONTEND_URL
+        value: ""
