@@ -22,78 +22,14 @@ const app = express();
 const corsOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
+  "https://around-us-f2jk.vercel.app",
+  "https://around-us-f2jk-g8yvwdltg-abdullah-sarims-projects.vercel.app",
 ];
 
-// Rate limiter configuration
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: { error: "Too many requests, please try again later." },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-// Apply rate limiter to all API routes
-app.use("/api", apiLimiter);
-
-app.use(cors({
-  origin: corsOrigins, 
-  credentials: true 
-}));
-// `credentials: true` allows the frontend to send cookies to the backend so that we can authenticate the user.
-app.use(clerkMiddleware()); // auth obj will be attached to the req
-app.use(express.json()); // parses JSON request bodies.
-app.use(express.urlencoded({ extended: true })); // parses form data (like HTML forms).
-
-app.get("/api/health", (req, res) => {
-  res.json({
-    message: "Welcome to AroundUs API - Powered by PostgreSQL, Drizzle ORM & Clerk Auth",
-    endpoints: {
-      users: "/api/users",
-      products: "/api/products",
-      comments: "/api/comments",
-      messages: "/api/messages",
-    },
-  });
-});
-
-app.get("/api/test", (req, res) => {
-  res.json({ message: "test route works" });
-});
-
-app.use("/api/users", userRoutes);
-app.use("/api/products", productRoutes);
-app.use("/api/comments", commentRoutes);
-app.use("/api/messages", messageRoutes);
-
-app.get("/test2", (req, res) => {
-  res.json({ message: "test2 works" });
-});
-
-// if (ENV.NODE_ENV === "production") {
-//   const __dirname = path.resolve();
-//   // serve static files from frontend/dist
-//   app.use(express.static(path.join(__dirname, "../frontend/dist")));
-//   // handle SPA routing - send all non-API routes to index.html - react app
-//   app.get("/{*any}", (req, res) => {
-//     res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
-//   });
-// }
-
-// Cleanup old sold products (older than 7 days)
-const cleanupSoldProducts = async () => {
-  try {
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    
-    // Use raw SQL for complex query
-    const result = await db.execute(
-      `DELETE FROM products WHERE is_sold = 'true' AND sold_at < '${oneWeekAgo.toISOString()}' RETURNING *`
-    );
-    
-    if (result.rowCount && result.rowCount > 0) {
-      console.log(`Cleaned up ${result.rowCount} old sold products`);
-    }
+// Add production frontend if FRONTEND_URL is set
+if (ENV.FRONTEND_URL) {
+  corsOrigins.push(ENV.FRONTEND_URL);
+}
   } catch (error) {
     console.error("Error cleaning up sold products:", error);
   }
