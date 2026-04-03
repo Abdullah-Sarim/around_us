@@ -45,7 +45,7 @@ const ProfilePage = () => {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">My Profile</h1>
+          <h1 className="sm:text-2xl text-xl font-bold">My Profile</h1>
           <p className="text-base-content/60 text-sm">Manage your listings and interests</p>
         </div>
         <div className="flex gap-2">
@@ -57,7 +57,7 @@ const ProfilePage = () => {
             {userCity ? userCity.charAt(0).toUpperCase() + userCity.slice(1) : "Set City"}
           </button>
           <Link to="/create" className="btn btn-primary btn-sm gap-1">
-            <PlusIcon className="size-4" /> New Product
+            <PlusIcon className="size-4" /> Product
           </Link>
         </div>
       </div>

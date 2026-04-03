@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { MessageCircleIcon, MapPinIcon, HeartIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 
-const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+const oneWeekAgo = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000);
 
 const ProductCard = ({ product }) => {
   const [isInWishlist, setIsInWishlist] = useState(false);
@@ -50,9 +50,9 @@ const ProductCard = ({ product }) => {
         )}
         <button
           onClick={toggleWishlist}
-          className={`absolute top-2 right-2 btn btn-circle btn-sm ${isInWishlist ? 'btn-secondary' : 'btn-ghost bg-base-100/70'}`}
+          className={`absolute top-4 right-4 btn btn-circle btn-sm ${isInWishlist ? 'btn-secondary' : 'btn-ghost bg-base-100/70'}`}
         >
-          <HeartIcon className={`size-4 ${isInWishlist ? 'fill-current' : ''}`} />
+          <HeartIcon className={`size-5 ${isInWishlist ? 'fill-current' : ''}`} />
         </button>
       </figure>
       <div className="card-body p-4">

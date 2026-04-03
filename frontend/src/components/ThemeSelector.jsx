@@ -50,15 +50,15 @@ function ThemeSelector() {
   }, [theme]);
 
   return (
-    <div className="dropdown dropdown-end">
-      <div tabIndex={0} role="button" className="btn btn-ghost btn-sm gap-1">
+    <div className="dropdown">
+      <div tabIndex={0} role="button" className="btn btn-ghost btn-sm md:p-2.5 p-1.5">
         <PaletteIcon className="size-5" />
         <span className="hidden sm:inline">Theme</span>
       </div>
 
       <ul
         tabIndex={0}
-        className="dropdown-content menu bg-base-200 rounded-box z-50 w-56 p-2 shadow-xl max-h-96 overflow-y-auto flex-nowrap"
+        className="dropdown-content menu bg-base-200 rounded-box z-50 w-50 p-2 shadow-xl max-h-85 overflow-y-auto flex-nowrap"
       >
         {THEMES.map((t) => (
           <li key={t}>
