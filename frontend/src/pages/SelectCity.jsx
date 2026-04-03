@@ -2,6 +2,8 @@ import { useNavigate } from "react-router";
 import { useAuth } from "@clerk/clerk-react";
 import { updateUserCity } from "../lib/api";
 
+const CITIES = ["delhi", "mumbai", "bangalore", "chennai", "kolkata", "hyderabad", "pune", "jaipur", "ahmedabad", "lucknow", "chandigarh", "surat", "nagpur"];
+
 function SelectCity() {
   const navigate = useNavigate();
 
@@ -21,26 +23,17 @@ function SelectCity() {
         <div className="card-body text-center">
           <h2 className="card-title justify-center">Select your city</h2>
 
-          <button
-            className="btn btn-outline"
-            onClick={() => handleSelect("delhi")}
-          >
-            Delhi
-          </button>
-
-          <button
-            className="btn btn-outline"
-            onClick={() => handleSelect("mumbai")}
-          >
-            Mumbai
-          </button>
-
-          <button
-            className="btn btn-outline"
-            onClick={() => handleSelect("bangalore")}
-          >
-            Bangalore
-          </button>
+          <div className="grid grid-cols-2 gap-2">
+            {CITIES.map((city) => (
+              <button
+                key={city}
+                className="btn btn-outline capitalize"
+                onClick={() => handleSelect(city)}
+              >
+                {city}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

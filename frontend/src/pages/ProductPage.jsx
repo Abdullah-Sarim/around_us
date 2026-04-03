@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, EditIcon, Trash2Icon, CalendarIcon, UserIcon, MessageCircleIcon, CheckCircleIcon } from "lucide-react";
+import { ArrowLeftIcon, EditIcon, Trash2Icon, CalendarIcon, UserIcon, MessageCircleIcon, CheckCircleIcon, MapPinIcon } from "lucide-react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import CommentsSection from "../components/CommentsSection";
 import { useAuth } from "@clerk/clerk-react";
@@ -71,9 +71,9 @@ function ProductPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
-        <Link to="/" className="btn btn-ghost btn-sm gap-1">
+        <button onClick={() => navigate(-1)} className="btn btn-ghost btn-sm gap-1">
           <ArrowLeftIcon className="size-4" /> Back
-        </Link>
+        </button>
         {isOwner && (
           <div className="flex gap-2">
             {!isSold && (
@@ -128,6 +128,12 @@ function ProductPage() {
         <div className="card bg-base-300">
           <div className="card-body">
             <h1 className="card-title text-2xl">{product.title}</h1>
+            {product.city && (
+              <div className="flex items-center gap-1 text-sm text-base-content/60 capitalize mb-2">
+                <MapPinIcon className="size-4" />
+                {product.city}
+              </div>
+            )}
 
             <div className="flex flex-wrap gap-4 text-sm text-base-content/60 my-2">
               {product.price != null && product.price !== "" && (

@@ -28,17 +28,31 @@ if (ENV.FRONTEND_URL) {
   corsOrigins.push(ENV.FRONTEND_URL);
 }
 
-// Rate limiter configuration
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+// Public API rate limiter (GET requests - less strict)
+const publicApiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 60, // 60 requests per minute for public endpoints
+  message: { error: "Too many requests, please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => req.method === "GET" && req.path === "/health", // Skip health check
+});
+
+// Authenticated API rate limiter (POST/PUT/DELETE - stricter)
+const authApiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 20, // 20 requests per minute for authenticated endpoints
   message: { error: "Too many requests, please try again later." },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-// Apply rate limiter to all API routes
-app.use("/api", apiLimiter);
+// Apply public rate limiter to read endpoints
+app.use("/api/products", publicApiLimiter);
+app.use("/api/users", publicApiLimiter);
+app.use("/api/test", publicApiLimiter);
+
+// Auth routes get stricter limit (must come after public limiter)
 
 app.use(cors({ 
   origin: corsOrigins, 
@@ -92,7 +106,7 @@ const cleanupSoldProducts = async () => {
   }
 };
 
-// Run cleanup every hour
-setInterval(cleanupSoldProducts, 60 * 60 * 1000);
+// Run cleanup every 6 hours
+setInterval(cleanupSoldProducts, 6 * 60 * 60 * 1000);
 
 app.listen(ENV.PORT, () => console.log("Server is up and running on PORT:", ENV.PORT));

@@ -2,13 +2,38 @@ import { Link, useNavigate } from "react-router";
 import { useMyProducts, useDeleteProduct } from "../hooks/useProducts";
 import { useConversations } from "../hooks/useMessages";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { PlusIcon, PackageIcon, EyeIcon, EditIcon, Trash2Icon, TagIcon, ShoppingCartIcon } from "lucide-react";
+import { PlusIcon, PackageIcon, EyeIcon, EditIcon, Trash2Icon, TagIcon, ShoppingCartIcon, MapPinIcon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { getCurrentUser, updateUserCity } from "../lib/api";
+
+const CITIES = ["delhi", "mumbai", "bangalore", "chennai", "kolkata", "hyderabad", "pune", "jaipur", "ahmedabad", "lucknow", "chandigarh", "surat", "nagpur"];
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { data: products, isLoading } = useMyProducts();
   const { data: conversations = [] } = useConversations();
   const deleteProduct = useDeleteProduct();
+
+  const [userCity, setUserCity] = useState(null);
+  const [showCitySelector, setShowCitySelector] = useState(false);
+  const [savingCity, setSavingCity] = useState(false);
+
+  useEffect(() => {
+    async function fetchUserCity() {
+      const { user } = await getCurrentUser();
+      if (user?.city) setUserCity(user.city);
+    }
+    fetchUserCity();
+  }, []);
+
+  const handleCityChange = async (city) => {
+    setSavingCity(true);
+    await updateUserCity(city);
+    localStorage.setItem("city", city);
+    setUserCity(city);
+    setSavingCity(false);
+    setShowCitySelector(false);
+  };
 
   const handleDelete = (id) => {
     if (confirm("Delete this product?")) deleteProduct.mutate(id);
@@ -23,10 +48,40 @@ const ProfilePage = () => {
           <h1 className="text-2xl font-bold">My Profile</h1>
           <p className="text-base-content/60 text-sm">Manage your listings and interests</p>
         </div>
-        <Link to="/create" className="btn btn-primary btn-sm gap-1">
-          <PlusIcon className="size-4" /> New Product
-        </Link>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowCitySelector(!showCitySelector)}
+            className="btn btn-outline btn-sm gap-1"
+          >
+            <MapPinIcon className="size-4" />
+            {userCity ? userCity.charAt(0).toUpperCase() + userCity.slice(1) : "Set City"}
+          </button>
+          <Link to="/create" className="btn btn-primary btn-sm gap-1">
+            <PlusIcon className="size-4" /> New Product
+          </Link>
+        </div>
       </div>
+
+      {/* City Selector */}
+      {showCitySelector && (
+        <div className="card bg-base-300">
+          <div className="card-body p-4">
+            <h3 className="font-medium mb-2">Select your city</h3>
+            <div className="flex flex-wrap gap-2">
+              {CITIES.map((city) => (
+                <button
+                  key={city}
+                  className={`btn btn-sm capitalize ${userCity === city ? "btn-primary" : "btn-outline"}`}
+                  onClick={() => handleCityChange(city)}
+                  disabled={savingCity}
+                >
+                  {city}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="stats bg-base-300 w-full">

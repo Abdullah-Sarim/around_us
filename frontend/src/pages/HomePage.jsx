@@ -7,7 +7,7 @@ import { SignInButton, useUser } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { getCurrentUser } from "../lib/api";
 
-const CITIES = ["all", "delhi", "mumbai", "bangalore"];
+const CITIES = ["all", "delhi", "mumbai", "bangalore", "chennai", "kolkata", "hyderabad", "pune", "jaipur", "ahmedabad", "lucknow", "chandigarh", "surat", "nagpur"];
 
 function HomePage() {
   const location = useLocation();
@@ -125,12 +125,19 @@ function HomePage() {
             <p className="py-4 text-base-content/60">
               Upload, discover, and connect with sellers near you.
             </p>
-            <SignInButton mode="modal">
-              <button className="btn btn-primary">
+            {isSignedIn ? (
+              <button onClick={() => navigate("/create")} className="btn btn-primary">
                 <SparklesIcon className="size-4" />
                 Start Selling
               </button>
-            </SignInButton>
+            ) : (
+              <SignInButton mode="modal">
+                <button className="btn btn-primary">
+                  <SparklesIcon className="size-4" />
+                  Start Selling
+                </button>
+              </SignInButton>
+            )}
           </div>
         </div>
       </div>

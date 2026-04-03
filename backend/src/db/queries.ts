@@ -64,18 +64,9 @@ export const upsertUser = async (data: NewUser) => {
 // };
 
 export const createProduct = async (data: NewProduct) => {
-  const user = await getUserById(data.userId);
-
-  if (!user?.city) {
-    throw new Error("User city not set");
-  }
-
   const [product] = await db
     .insert(products)
-    .values({
-      ...data,
-      city: user.city.toLowerCase(),
-    })
+    .values(data)
     .returning();
 
   return product;

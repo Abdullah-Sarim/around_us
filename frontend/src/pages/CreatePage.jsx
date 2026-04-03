@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 function CreatePage() {
+  const CITIES = ["delhi", "mumbai", "bangalore", "chennai", "kolkata", "hyderabad", "pune", "jaipur", "ahmedabad", "lucknow", "chandigarh", "surat", "nagpur"];
   const navigate = useNavigate();
   const createProduct = useCreateProduct();
 
@@ -24,8 +25,10 @@ function CreatePage() {
     isNegotiable: false,
   });
 
-  const [city, setCity] = useState(localStorage.getItem("city") || "");
+  const [city, setCity] = useState("");
   const [savingCity, setSavingCity] = useState(false);
+  const [showOtherInput, setShowOtherInput] = useState(false);
+  const [otherCity, setOtherCity] = useState("");
 
   // 🔹 Save city to backend + localStorage
   const saveCity = async (selectedCity) => {
@@ -43,7 +46,7 @@ function CreatePage() {
 
     if (!city) return;
 
-    createProduct.mutate(formData, {
+    createProduct.mutate({ ...formData, city }, {
       onSuccess: () => {
         setFormData({ title: "", description: "", imageUrl: "" });
         navigate("/");
@@ -64,28 +67,61 @@ function CreatePage() {
             New Product
           </h1>
 
-          {/*CITY REQUIRED */}
-          {!city && (
-            <div className="alert alert-warning flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <MapPinIcon className="size-4" />
-                <span>Please select your city before creating a product</span>
-              </div>
-
-              <div className="flex gap-2">
-                {["delhi", "mumbai", "bangalore"].map((c) => (
-                  <button
-                    key={c}
-                    className="btn btn-outline btn-sm capitalize"
-                    onClick={() => saveCity(c)}
-                    disabled={savingCity}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
+          {/*CITY SELECTOR - Always shown */}
+          <div className="flex flex-col gap-3 p-4 rounded-box bg-base-200 border border-primary/30">
+            <div className="flex items-center gap-2">
+              <MapPinIcon className="size-4 text-primary" />
+              <span className="font-medium">Select city for this product</span>
             </div>
-          )}
+
+            <div className="flex gap-2 flex-wrap">
+              {CITIES.map((c) => (
+                <button
+                  key={c}
+                  className={`btn btn-sm capitalize ${city === c ? "btn-primary" : "btn-outline"}`}
+                  onClick={() => {
+                    setCity(c);
+                    setShowOtherInput(false);
+                  }}
+                  disabled={savingCity}
+                >
+                  {c}
+                </button>
+              ))}
+              <button
+                className={`btn btn-sm capitalize ${showOtherInput ? "btn-primary" : "btn-outline"}`}
+                onClick={() => setShowOtherInput(!showOtherInput)}
+                type="button"
+              >
+                Other
+              </button>
+            </div>
+
+            {showOtherInput && (
+              <div className="flex gap-2 mt-2">
+                <input
+                  type="text"
+                  placeholder="Enter your city"
+                  className="input input-bordered input-sm flex-1"
+                  value={otherCity}
+                  onChange={(e) => setOtherCity(e.target.value)}
+                />
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={() => {
+                    if (otherCity.trim()) {
+                      saveCity(otherCity.trim().toLowerCase());
+                      setCity(otherCity.trim().toLowerCase());
+                      setShowOtherInput(false);
+                    }
+                  }}
+                  disabled={savingCity || !otherCity.trim()}
+                >
+                  Add
+                </button>
+              </div>
+            )}
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
             {/* TITLE */}
@@ -196,10 +232,8 @@ function CreatePage() {
             >
               {createProduct.isPending ? (
                 <span className="loading loading-spinner" />
-              ) : city ? (
-                "Create Product"
               ) : (
-                "Select city first"
+                "Create Product"
               )}
             </button>
           </form>

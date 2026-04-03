@@ -19,7 +19,7 @@ export const useProducts = (city, page = 1) => {
   return useQuery({
     queryKey: ["products", city, page],
     queryFn: () => city ? getProductsByCity(city, page) : getAllProducts(page),
-    enabled: true,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 
@@ -45,7 +45,12 @@ export const useProduct = (id) => {
     queryKey: ["product", id],
     queryFn: () => getProductById(id),
     enabled: !!id,
+    staleTime: 5 * 60 * 1000,
   });
+};
+
+export const useMyProducts = () => {
+  return useQuery({ queryKey: ["myProducts"], queryFn: getMyProducts, staleTime: 5 * 60 * 1000 });
 };
 
 export const useDeleteProduct = () => {
@@ -57,10 +62,6 @@ export const useDeleteProduct = () => {
       queryClient.invalidateQueries({ queryKey: ["myProducts"] });
     },
   });
-};
-
-export const useMyProducts = () => {
-  return useQuery({ queryKey: ["myProducts"], queryFn: getMyProducts });
 };
 
 export const useUpdateProduct = () => {

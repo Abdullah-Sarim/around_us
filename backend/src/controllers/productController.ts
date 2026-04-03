@@ -51,7 +51,7 @@ export const createProduct = async (req: Request, res: Response) => {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const { title, description, imageUrl, price, isNegotiable } = req.body;
+    const { title, description, imageUrl, price, isNegotiable, city } = req.body;
 
     if (!title || !description || !imageUrl) {
       return res.status(400).json({
@@ -59,12 +59,9 @@ export const createProduct = async (req: Request, res: Response) => {
       });
     }
 
-    //get user to read city
-    const user = await queries.getUserById(userId);
-
-    if (!user?.city) {
+    if (!city) {
       return res.status(400).json({
-        error: "User city not set. Please select your city first.",
+        error: "City is required. Please select a city.",
       });
     }
 
@@ -75,9 +72,10 @@ export const createProduct = async (req: Request, res: Response) => {
       price: price || null,
       isNegotiable: isNegotiable || "false",
       userId,
-      city: user.city.toLowerCase(), //backend controlled
+      city: city.toLowerCase(),
     });
 
+    console.log("Product created with city:", city.toLowerCase());
     res.status(201).json(product);
   } catch (error) {
     console.error("Error creating product:", error);
@@ -111,7 +109,7 @@ export const updateProduct = async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const { id } = req.params;
-    const { title, description, imageUrl } = req.body;
+    const { title, description, imageUrl, price, isNegotiable } = req.body;
 
     // Check if product exists and belongs to user
     const existingProduct = await queries.getProductById(id);
@@ -129,6 +127,8 @@ export const updateProduct = async (req: Request, res: Response) => {
       title,
       description,
       imageUrl,
+      price,
+      isNegotiable,
     });
 
     res.status(200).json(product);

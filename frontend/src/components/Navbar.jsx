@@ -1,36 +1,62 @@
 import { Link } from "react-router";
 import { SignInButton, SignUpButton, UserButton, useAuth } from "@clerk/clerk-react";
-import { ShoppingBagIcon, PlusIcon, UserIcon, MessageCircleIcon } from "lucide-react";
+import { ShoppingBagIcon, PlusIcon, UserIcon, MessageCircleIcon, HeartIcon } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
+import { useState, useEffect } from "react";
 
 function Navbar() {
   const { isSignedIn } = useAuth();
+  const [wishlistCount, setWishlistCount] = useState(0);
+
+  useEffect(() => {
+    const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+    setWishlistCount(wishlist.length);
+
+    const handleWishlistUpdate = () => {
+      const updated = JSON.parse(localStorage.getItem("wishlist") || "[]");
+      setWishlistCount(updated.length);
+    };
+
+    window.addEventListener("wishlistUpdated", handleWishlistUpdate);
+    return () => window.removeEventListener("wishlistUpdated", handleWishlistUpdate);
+  }, []);
 
   return (
     <div className="navbar bg-base-300 sticky top-0 shadow z-50">
-      <div className="max-w-full mx-auto w-full px-2 flex justify-between items-center">
+      <div className="max-w-full mx-auto w-full px- flex justify-between items-center">
         {/* LOGO - LEFT SIDE */}
         <div className="flex-1">
-          <Link to="/" className="btn btn-ghost gap-2">
-            <ShoppingBagIcon className="size-5.5 text-primary" />
+          <Link to="/" className="btn btn-ghost gap-1">
+            <ShoppingBagIcon className="size-6 text-primary" />
             <span className="text-2xl font-bold font-mono tracking-wider hidden sm:inline">AroundUs</span>
           </Link>
         </div>
 
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center">
           <ThemeSelector />
+          <Link to="/wishlist" className="btn btn-ghost btn-sm gap-1">
+            <div className="relative">
+              <HeartIcon className="size-5" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-primary text-primary-content text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
+            </div>
+            <span className="hidden sm:inline">Wishlist</span>
+          </Link>
           {isSignedIn ? (
             <>
               <Link to="/chat" className="btn btn-ghost btn-sm gap-1">
-                <MessageCircleIcon className="size-4" />
-                <span className="hidden sm:inline">Messages</span>
+                <MessageCircleIcon className="size-5" />
+                <span className="hidden sm:inline">Chats</span>
               </Link>
               <Link to="/create" className="btn btn-primary btn-sm gap-1">
-                <PlusIcon className="size-4" />
-                <span className="hidden sm:inline">New Product</span>
+                <PlusIcon className="size-5" />
+                <span className="hidden sm:inline">Product</span>
               </Link>
               <Link to="/profile" className="btn btn-ghost btn-sm gap-1">
-                <UserIcon className="size-4" />
+                <UserIcon className="size-5" />
                 <span className="hidden sm:inline">Profile</span>
               </Link>
               <UserButton />

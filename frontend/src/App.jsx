@@ -7,6 +7,7 @@ import CreatePage from "./pages/CreatePage";
 import EditProductPage from "./pages/EditProductPage";
 import SelectCity from "./pages/SelectCity";
 import ChatPage from "./pages/ChatPage";
+import WishlistPage from "./pages/WishlistPage";
 import useAuthReq from "./hooks/useAuthReq";
 import useUserSync from "./hooks/useUserSync";
 import RequireAuthModal from "./components/RequireAuthModal";
@@ -50,6 +51,8 @@ function App() {
             path="/edit/:id"
             element={isSignedIn ? <EditProductPage /> : <RequireAuthModal />}
           />
+
+          <Route path="/wishlist" element={<WishlistPage />} />
         </Routes>
       </main>
     </div>
