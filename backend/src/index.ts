@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import rateLimit from "express-rate-limit";
 
 import { ENV } from "./config/env";
 import { clerkMiddleware } from "@clerk/express";
@@ -23,12 +24,19 @@ const corsOrigins = [
   "http://localhost:3000",
 ];
 
-// Add production frontend if FRONTEND_URL is set
-if (ENV.FRONTEND_URL) {
-  corsOrigins.push(ENV.FRONTEND_URL);
-}
+// Rate limiter configuration
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: { error: "Too many requests, please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
-app.use(cors({ 
+// Apply rate limiter to all API routes
+app.use("/api", apiLimiter);
+
+app.use(cors({
   origin: corsOrigins, 
   credentials: true 
 }));

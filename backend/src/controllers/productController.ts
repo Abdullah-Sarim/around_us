@@ -51,7 +51,7 @@ export const createProduct = async (req: Request, res: Response) => {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const { title, description, imageUrl } = req.body;
+    const { title, description, imageUrl, price, isNegotiable } = req.body;
 
     if (!title || !description || !imageUrl) {
       return res.status(400).json({
@@ -72,6 +72,8 @@ export const createProduct = async (req: Request, res: Response) => {
       title,
       description,
       imageUrl,
+      price: price || null,
+      isNegotiable: isNegotiable || "false",
       userId,
       city: user.city.toLowerCase(), //backend controlled
     });
