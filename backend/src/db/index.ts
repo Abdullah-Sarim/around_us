@@ -15,6 +15,9 @@ const pool = new Pool({
   },
   connectionTimeoutMillis: 10000,
   idleTimeoutMillis: 30000,
+
+  max: 5,
+  keepAlive: true,
 });
 
 // log when first connection is made
