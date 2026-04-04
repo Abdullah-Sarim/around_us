@@ -4,6 +4,7 @@ import { useCreateComment, useDeleteComment } from "../hooks/useComments";
 import { useStartConversation } from "../hooks/useMessages";
 import { SendIcon, Trash2Icon, MessageSquareIcon, LogInIcon, MessageCircleIcon } from "lucide-react";
 import { useNavigate } from "react-router";
+import { confirmDialog } from "./ConfirmDialog";
 
 function CommentsSection({ productId, comments = [], currentUserId, productOwnerId }) {
   const { isSignedIn } = useAuth();
@@ -123,8 +124,9 @@ function CommentsSection({ productId, comments = [], currentUserId, productOwner
               {currentUserId === comment.userId && (
                 <div className="chat-footer">
                   <button
-                    onClick={() =>
-                      confirm("Delete?") && deleteComment.mutate({ commentId: comment.id })
+                    onClick={async () =>
+                      (await confirmDialog({ title: "Delete Comment", message: "Are you sure you want to delete this comment?", confirmText: "Delete", type: "danger" })) &&
+                      deleteComment.mutate({ commentId: comment.id })
                     }
                     className="btn btn-ghost btn-xs text-error"
                     disabled={deleteComment.isPending}

@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "react-router";
-import { HeartIcon, Trash2Icon, EyeIcon, MapPinIcon } from "lucide-react";
+import { HeartIcon, Trash2Icon, EyeIcon, MapPinIcon, PackageIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 
-const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+const oneWeekAgo = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000);
 
 function WishlistPage() {
   const [wishlist, setWishlist] = useState([]);
@@ -22,17 +22,17 @@ function WishlistPage() {
 
   if (wishlist.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <h1 className="text-2xl font-bold flex items-center gap-2 mb-6">
           <HeartIcon className="size-6 text-secondary" />
           My Wishlist
         </h1>
         <div className="card bg-base-300">
           <div className="card-body items-center text-center py-16">
-            <HeartIcon className="size-16 text-base-content/20" />
+            <PackageIcon className="size-12 text-base-content/20" />
             <h3 className="card-title text-base-content/50">Your wishlist is empty</h3>
             <p className="text-base-content/40 text-sm">Browse products and click the heart icon to add them here</p>
-            <Link to="/" className="btn btn-primary mt-4">
+            <Link to="/" className="btn btn-primary btn-sm mt-4">
               Browse Products
             </Link>
           </div>
@@ -42,7 +42,7 @@ function WishlistPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6">
       <h1 className="text-2xl font-bold flex items-center gap-2">
         <HeartIcon className="size-6 text-secondary" />
         My Wishlist
@@ -55,11 +55,11 @@ function WishlistPage() {
           const isSold = product.isSold === "true" || product.is_sold === "true";
 
           return (
-            <div key={product.id} className={`card card-side bg-base-300 ${isSold ? 'opacity-75' : ''}`}>
-              <figure className="w-32 shrink-0">
+            <div key={product.id} className="card card-side bg-base-300">
+              <figure className="w-30 sm:w-50 shrink-0">
                 <img src={product.imageUrl} alt={product.title} className="h-full object-cover" />
               </figure>
-              <div className="card-body p-4">
+              <div className="card-body p-2 sm:p-4">
                 <h2 className="card-title text-base">
                   {product.title}
                   {(product.isSold === "true" || product.is_sold === "true") && (
@@ -67,7 +67,9 @@ function WishlistPage() {
                   )}
                   {isNew && !isSold && <span className="badge badge-secondary badge-sm">NEW</span>}
                   {product.isNegotiable === "true" && !isSold && (
-                    <span className="badge badge-primary badge-sm">Negotiable</span>
+                    <span className="text-sm font-normal text-base-content/70 ml-1">
+                    (Negotiable)
+                  </span>
                   )}
                 </h2>
                 {product.city && (
@@ -79,19 +81,19 @@ function WishlistPage() {
                 {product.price && (
                   <p className="text-lg font-bold text-primary">₹{product.price}</p>
                 )}
-                <p className="text-sm text-base-content/60 line-clamp-1">{product.description}</p>
+                <p className="text-sm text-base-content/60 line-clamp-1 truncate max-w-50">{product.description}</p>
                 <div className="card-actions justify-end mt-2">
                   <button
                     onClick={() => navigate(`/product/${product.id}`)}
-                    className="btn btn-ghost btn-xs gap-1"
+                    className="btn btn-ghost btn-sm sm:btn-xs gap-1"
                   >
-                    <EyeIcon className="size-3" /> View
+                    <EyeIcon className="size-3 sm:size-5" /> View
                   </button>
                   <button
                     onClick={() => removeFromWishlist(product.id)}
-                    className="btn btn-ghost btn-xs text-error gap-1"
+                    className="btn btn-ghost btn-sm sm:btn-xs text-error gap-1"
                   >
-                    <Trash2Icon className="size-3" /> Remove
+                    <Trash2Icon className="size-3 sm:size-5" /> Remove
                   </button>
                 </div>
               </div>

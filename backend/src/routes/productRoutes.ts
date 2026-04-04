@@ -25,6 +25,9 @@ router.post("/", requireAuth(), productController.createProduct);
 // POST /api/products/sold/:id - Mark product as sold (protected)
 router.post("/sold/:id", requireAuth(), productController.markAsSold);
 
+// DELETE /api/products/sold/:id - Mark product as unsold (protected)
+router.delete("/sold/:id", requireAuth(), productController.markAsUnsold);
+
 // PUT /api/products/:id - Update product (protected - owner only)
 router.put("/:id", requireAuth(), productController.updateProduct);
 

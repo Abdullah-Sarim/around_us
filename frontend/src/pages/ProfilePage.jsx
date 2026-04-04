@@ -5,6 +5,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import { PlusIcon, PackageIcon, EyeIcon, EditIcon, Trash2Icon, TagIcon, ShoppingCartIcon, MapPinIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getCurrentUser, updateUserCity } from "../lib/api";
+import { confirmDialog } from "../components/ConfirmDialog";
 
 const CITIES = ["delhi", "mumbai", "bangalore", "chennai", "kolkata", "hyderabad", "pune", "jaipur", "ahmedabad", "lucknow", "chandigarh", "surat", "nagpur"];
 
@@ -35,8 +36,14 @@ const ProfilePage = () => {
     setShowCitySelector(false);
   };
 
-  const handleDelete = (id) => {
-    if (confirm("Delete this product?")) deleteProduct.mutate(id);
+  const handleDelete = async (id) => {
+    const confirmed = await confirmDialog({
+      title: "Delete Product",
+      message: "Are you sure you want to delete this product?",
+      confirmText: "Delete",
+      type: "danger"
+    });
+    if (confirmed) deleteProduct.mutate(id);
   };
 
   if (isLoading) return <LoadingSpinner />;
@@ -121,42 +128,42 @@ const ProfilePage = () => {
           <div className="grid gap-4">
             {products?.map((product) => (
               <div key={product.id} className="card card-side bg-base-300">
-                <figure className="w-32 shrink-0">
+                <figure className="w-30  sm:w-50 shrink-0">
                   <img src={product.imageUrl} alt={product.title} className="h-full object-cover" />
                 </figure>
-                <div className="card-body p-4">
+                <div className="card-body p-2 sm:p-4">
                   <h2 className="card-title text-base">
                     {product.title}
                     {(product.isSold === "true" || product.is_sold === "true") && (
                       <span className="badge badge-success badge-sm">SOLD</span>
                     )}
                     {product.isNegotiable === "true" && product.isSold !== "true" && product.is_sold !== "true" && (
-                      <span className="badge badge-primary badge-sm">Negotiable</span>
+                      <span className="text-sm font-normal text-base-content/70 ml-1">(Negotiable)</span>
                     )}
                   </h2>
                   {product.price && (
                     <p className="text-lg font-bold text-primary">₹{product.price}</p>
                   )}
-                  <p className="text-sm text-base-content/60 line-clamp-1">{product.description}</p>
+                  <p className="text-sm text-base-content/60 line-clamp-1 truncate max-w-50">{product.description}</p>
                   <div className="card-actions justify-end mt-2">
                     <button
                       onClick={() => navigate(`/product/${product.id}`)}
-                      className="btn btn-ghost btn-xs gap-1"
+                      className="btn btn-ghost btn-sm sm:btn-xs gap-1"
                     >
-                      <EyeIcon className="size-3" /> View
+                      <EyeIcon className="size-3 sm:size-5" /> View
                     </button>
                     <button
                       onClick={() => navigate(`/edit/${product.id}`)}
-                      className="btn btn-ghost btn-xs gap-1"
+                      className="btn btn-ghost btn-sm sm:btn-xs gap-1"
                     >
-                      <EditIcon className="size-3" /> Edit
+                      <EditIcon className="size-3 sm:size-5" /> Edit
                     </button>
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="btn btn-ghost btn-xs text-error gap-1"
+                      className="btn btn-ghost btn-sm sm:btn-xs text-error gap-1"
                       disabled={deleteProduct.isPending}
                     >
-                      <Trash2Icon className="size-3" /> Delete
+                      <Trash2Icon className="size-3 sm:size-5" /> Delete
                     </button>
                   </div>
                 </div>

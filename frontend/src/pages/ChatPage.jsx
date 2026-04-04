@@ -5,6 +5,7 @@ import { useConversations, useConversation, useMessages, useSendMessage, useDele
 import useAuthReq from "../hooks/useAuthReq";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { MessageCircleIcon, SendIcon, ArrowLeftIcon, Trash2Icon } from "lucide-react";
+import { confirmDialog } from "../components/ConfirmDialog";
 
 function ChatPage() {
   const { id } = useParams();
@@ -23,7 +24,13 @@ function ChatPage() {
   const isSeller = conversation?.sellerId === user?.id;
 
   const handleDeleteConversation = async () => {
-    if (confirm("Delete this conversation? This action cannot be undone.")) {
+    const confirmed = await confirmDialog({
+      title: "Delete Conversation",
+      message: "Delete this conversation? This action cannot be undone.",
+      confirmText: "Delete",
+      type: "danger"
+    });
+    if (confirmed) {
       await deleteConversation.mutateAsync(id);
       navigate("/chat");
     }

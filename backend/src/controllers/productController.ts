@@ -197,6 +197,37 @@ export const markAsSold = async (req: Request, res: Response) => {
   }
 };
 
+export const markAsUnsold = async (req: Request, res: Response) => {
+  try {
+    const { userId } = getAuth(req);
+    
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const productId = req.params.id;
+    
+    if (!productId) {
+      return res.status(400).json({ error: "productId is required" });
+    }
+    
+    const product = await queries.getProductById(productId);
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+    
+    if (product.userId !== userId) {
+      return res.status(403).json({ error: "Only owner can mark as unsold" });
+    }
+
+    const updatedProduct = await queries.updateProduct(productId, { isSold: "false", soldAt: null });
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    console.error("Error marking as unsold:", error);
+    res.status(500).json({ error: "Failed to mark as unsold" });
+  }
+};
+
 export const searchProducts = async (req: Request, res: Response) => {
   try {
     const { q } = req.query;

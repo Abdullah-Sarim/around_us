@@ -7,6 +7,15 @@ import { useState, useEffect } from "react";
 function Navbar() {
   const { isSignedIn } = useAuth();
   const [wishlistCount, setWishlistCount] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
@@ -22,52 +31,84 @@ function Navbar() {
   }, []);
 
   return (
-    <div className="navbar bg-base-300 sticky top-0 shadow z-50">
-      <div className="max-w-full mx-auto w-full px-1 flex justify-between items-center">
+    <div className={`navbar sticky top-0 z-50 transition-all duration-300 ${
+      scrolled 
+        ? "bg-base-100/90 backdrop-blur-md shadow-lg shadow-base-content/5" 
+        : "bg-base-300"
+    }`}>
+      <div className="max-w-11/12 mx-auto w-full px-1 sm:px-2.5 flex justify-between items-center">
         {/* LOGO - LEFT SIDE */}
         <div className="flex-1">
-          <Link to="/" className="btn btn-ghost gap-2 p-1.5">
-            <ShoppingBagIcon className="size-6 text-primary" />
-            <span className="text-2xl font-bold font-mono tracking-wider hidden sm:inline">AroundUs</span>
+          <Link to="/" className="btn btn-ghost gap-2 pl-0 hover:bg-transparent hover:scale-105 transition-all">
+            <div className="relative">
+              <ShoppingBagIcon className="size-7 md:size-8 text-primary" />
+              <div className="absolute -inset-1 bg-primary/20 rounded-full blur-md -z-10" />
+            </div>
+            <span className="text-xl md:text-2xl font-bold tracking-tight hidden sm:inline">
+              Around<span className="text-primary">Us</span>
+            </span>
           </Link>
         </div>
 
-        <div className="flex items-center">
+        {/* NAV - RIGHT SIDE */}
+        <div className="flex items-center gap-0.5">
           <ThemeSelector />
-          <Link to="/wishlist" className="btn btn-ghost btn-sm gap-1 md:p-2.5 p-1.5">
+          
+          <Link 
+            to="/wishlist" 
+            className="btn btn-ghost btn-sm gap-1.5 px-2 md:px-3 hover:bg-base-200 active:scale-95 transition-all"
+          >
             <div className="relative">
-              <HeartIcon className="size-5" />
+              <HeartIcon className="md:size-5" />
               {wishlistCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-primary text-primary-content text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-1.5 -right-1.5 bg-secondary text-secondary-content text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
                   {wishlistCount}
                 </span>
               )}
             </div>
             <span className="hidden sm:inline">Wishlist</span>
           </Link>
+          
           {isSignedIn ? (
             <>
-              <Link to="/chat" className="btn btn-ghost btn-sm gap-1 md:p-2.5 p-1.5">
-                <MessageCircleIcon className="size-5" />
+              <Link 
+                to="/chat" 
+                className="btn btn-ghost btn-sm gap-1.5 px-2 md:px-3 hover:bg-base-200 active:scale-95 transition-all"
+              >
+                <MessageCircleIcon className="md:size-5" />
                 <span className="hidden sm:inline">Chats</span>
               </Link>
-              <Link to="/create" className="btn btn-primary btn-sm gap-1 md:p-2.5 p-1.5">
-                <PlusIcon className="size-5" />
+              
+              <Link 
+                to="/create" 
+                className="btn btn-primary btn-sm gap-1.5 px-2 md:px-3 active:scale-95 transition-transform shadow-lg shadow-primary/25"
+              >
+                <PlusIcon className="size-4.5 md:size-5" />
                 <span className="hidden sm:inline">Product</span>
               </Link>
-              <Link to="/profile" className="btn btn-ghost btn-sm gap-1 md:p-2.5 p-1.5">
-                <UserIcon className="size-5" />
+              
+              <Link 
+                to="/profile" 
+                className="btn btn-ghost btn-sm gap-1.5 px-2 md:px-3 hover:bg-base-200 active:scale-95 transition-all"
+              >
+                <UserIcon className="md:size-5" />
                 <span className="hidden sm:inline">Profile</span>
               </Link>
-              <UserButton />
+              
+              <div className="ml-1 active:scale-95 transition-transform">
+                <UserButton />
+              </div>
             </>
           ) : (
             <>
               <SignInButton mode="modal">
-                <button className="btn btn-ghost btn-sm">Sign In</button>
+                <button className="btn btn-ghost btn-sm hover:bg-base-200 active:scale-95 transition-all">
+                  <span className="hidden sm:inline">Sign In</span>
+                  <span className="sm:hidden">Sign</span>
+                </button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button className="btn btn-primary btn-sm">
+                <button className="btn btn-primary btn-sm active:scale-95 transition-transform shadow-lg shadow-primary/25">
                   <span className="hidden sm:inline">Get Started</span>
                   <span className="sm:hidden">Start</span>
                 </button>

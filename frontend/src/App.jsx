@@ -11,6 +11,7 @@ import WishlistPage from "./pages/WishlistPage";
 import useAuthReq from "./hooks/useAuthReq";
 import useUserSync from "./hooks/useUserSync";
 import RequireAuthModal from "./components/RequireAuthModal";
+import ConfirmDialog from "./components/ConfirmDialog";
 
 function App() {
   const { isClerkLoaded, isSignedIn } = useAuthReq();
@@ -21,7 +22,8 @@ function App() {
   return (
     <div className="min-h-screen bg-base-100">
       <Navbar />
-      <main className="max-w-7xl mx-auto px-2.5 py-8">
+      <ConfirmDialog />
+      <main className="max-w-11/12 mx-auto px-2.5 py-8">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/product/:id" element={<ProductPage />} />

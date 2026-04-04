@@ -6,7 +6,8 @@ import {
   sendMessage,
   startConversation,
   deleteConversation,
-  markAsSold
+  markAsSold,
+  markAsUnsold
 } from "../lib/api";
 
 export const useConversations = () => {
@@ -72,6 +73,19 @@ export const useMarkAsSold = () => {
   
   return useMutation({
     mutationFn: ({ productId }) => markAsSold(productId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["myProducts"] });
+      queryClient.invalidateQueries({ queryKey: ["product"] });
+    },
+  });
+};
+
+export const useMarkAsUnsold = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (productId) => markAsUnsold(productId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["myProducts"] });

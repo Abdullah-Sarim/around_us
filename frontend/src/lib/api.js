@@ -107,3 +107,8 @@ export const markAsSold = async (productId) => {
   const { data } = await api.post(`/products/sold/${productId}`);
   return data;
 };
+
+export const markAsUnsold = async (productId) => {
+  const { data } = await api.delete(`/products/sold/${productId}`);
+  return data;
+};

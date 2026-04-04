@@ -51,8 +51,8 @@ function ThemeSelector() {
 
   return (
     <div className="dropdown">
-      <div tabIndex={0} role="button" className="btn btn-ghost btn-sm md:p-2.5 p-1.5">
-        <PaletteIcon className="size-5" />
+      <div tabIndex={0} role="button" className="btn btn-ghost btn-sm md:p-2.5 p-1.5 hover:bg-base-200 active:scale-95 transition-al">
+        <PaletteIcon className="md:size-5" />
         <span className="hidden sm:inline">Theme</span>
       </div>
 
