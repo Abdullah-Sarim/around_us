@@ -1,11 +1,12 @@
 import { useProducts, useSearchProducts } from "../hooks/useProducts";
-import { PackageIcon, SparklesIcon, MapPinIcon, ChevronDownIcon, SearchIcon, XIcon } from "lucide-react";
+import { PackageIcon, SparklesIcon, MapPinIcon, ChevronDownIcon, SearchIcon, XIcon, WifiIcon } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ProductCard from "../components/ProductCard";
 import { SignInButton, useUser } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { getCurrentUser } from "../lib/api";
+import { ProductListSkeleton } from "../components/Skeleton";
 
 const CITIES = ["all", "delhi", "mumbai", "bangalore", "chennai", "kolkata", "hyderabad", "pune", "jaipur", "ahmedabad", "lucknow", "chandigarh", "surat", "nagpur"];
 
@@ -277,10 +278,14 @@ function HomePage() {
 
           {/* PRODUCTS GRID */}
           {isLoading ? (
-            <LoadingSpinner />
+            <ProductListSkeleton count={8} />
           ) : error ? (
             <div role="alert" className="alert alert-error">
-              <span>Something went wrong. Please refresh the page.</span>
+              <WifiIcon className="size-5" />
+              <div>
+                <span className="font-semibold">Connection failed</span>
+                <p className="text-xs">Retrying automatically...</p>
+              </div>
             </div>
           ) : products.length === 0 ? (
             <div className="card bg-base-200 border border-base-content/5">

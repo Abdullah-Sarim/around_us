@@ -4,8 +4,9 @@ import { useUser } from "@clerk/clerk-react";
 import { useConversations, useConversation, useMessages, useSendMessage, useDeleteConversation } from "../hooks/useMessages";
 import useAuthReq from "../hooks/useAuthReq";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { MessageCircleIcon, SendIcon, ArrowLeftIcon, Trash2Icon } from "lucide-react";
+import { MessageCircleIcon, SendIcon, ArrowLeftIcon, Trash2Icon, WifiIcon } from "lucide-react";
 import { confirmDialog } from "../components/ConfirmDialog";
+import { ChatPageSkeleton } from "../components/Skeleton";
 
 function ChatPage() {
   const { id } = useParams();
@@ -65,7 +66,7 @@ function ChatPage() {
     setNewMessage("");
   };
 
-  if (loadingConversations) return <LoadingSpinner />;
+  if (loadingConversations) return <ChatPageSkeleton />;
 
   if (!id) {
     return (

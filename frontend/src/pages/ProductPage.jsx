@@ -8,6 +8,7 @@ import {
   CheckCircleIcon,
   MapPinIcon,
   RotateCcwIcon,
+  WifiIcon,
 } from "lucide-react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import CommentsSection from "../components/CommentsSection";
@@ -20,6 +21,7 @@ import {
   useMarkAsUnsold,
 } from "../hooks/useMessages";
 import { confirmDialog } from "../components/ConfirmDialog";
+import { ProductPageSkeleton } from "../components/Skeleton";
 
 function ProductPage() {
   const { id } = useParams();
@@ -103,16 +105,23 @@ function ProductPage() {
 
   const isSold = product?.isSold === "true" || product?.is_sold === "true";
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading) return <ProductPageSkeleton />;
 
   if (error || !product) {
     return (
-      <div className="card bg-base-300 max-w-md mx-auto">
-        <div className="card-body items-center text-center">
-          <h2 className="card-title text-error">Product not found</h2>
-          <Link to="/" className="btn btn-primary btn-sm">
-            Go Home
-          </Link>
+      <div className="max-w-6xl sm:px-2 px-1 mx-auto space-y-6">
+        <div className="flex items-center justify-between">
+          <button onClick={() => navigate(-1)} className="btn btn-ghost btn-sm gap-2">
+            <ArrowLeftIcon className="size-5" />
+            <span className="hidden sm:inline">Back</span>
+          </button>
+        </div>
+        <div role="alert" className="alert alert-error">
+          <WifiIcon className="size-5" />
+          <div>
+            <span className="font-semibold">Could not load product</span>
+            <p className="text-xs">Retrying automatically...</p>
+          </div>
         </div>
       </div>
     );

@@ -2,10 +2,11 @@ import { Link, useNavigate } from "react-router";
 import { useMyProducts, useDeleteProduct } from "../hooks/useProducts";
 import { useConversations } from "../hooks/useMessages";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { PlusIcon, PackageIcon, EyeIcon, EditIcon, Trash2Icon, TagIcon, ShoppingCartIcon, MapPinIcon } from "lucide-react";
+import { PlusIcon, PackageIcon, EyeIcon, EditIcon, Trash2Icon, TagIcon, ShoppingCartIcon, MapPinIcon, WifiIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getCurrentUser, updateUserCity } from "../lib/api";
 import { confirmDialog } from "../components/ConfirmDialog";
+import { ProfilePageSkeleton } from "../components/Skeleton";
 
 const CITIES = ["delhi", "mumbai", "bangalore", "chennai", "kolkata", "hyderabad", "pune", "jaipur", "ahmedabad", "lucknow", "chandigarh", "surat", "nagpur"];
 
@@ -46,7 +47,7 @@ const ProfilePage = () => {
     if (confirmed) deleteProduct.mutate(id);
   };
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading) return <ProfilePageSkeleton />;
 
   return (
     <div className="space-y-8">
