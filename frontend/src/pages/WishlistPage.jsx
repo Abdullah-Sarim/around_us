@@ -1,12 +1,11 @@
-import { Link, useNavigate } from "react-router";
-import { HeartIcon, Trash2Icon, EyeIcon, MapPinIcon, PackageIcon } from "lucide-react";
+import { Link } from "react-router";
+import { HeartIcon, Trash2Icon, MapPinIcon, PackageIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const oneWeekAgo = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000);
 
 function WishlistPage() {
   const [wishlist, setWishlist] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("wishlist") || "[]");
@@ -42,7 +41,7 @@ function WishlistPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-full mx-auto space-y-6">
       <h1 className="text-2xl font-bold flex items-center gap-2">
         <HeartIcon className="size-6 text-secondary" />
         My Wishlist
@@ -55,7 +54,7 @@ function WishlistPage() {
           const isSold = product.isSold === "true" || product.is_sold === "true";
 
           return (
-            <div key={product.id} className="card card-side bg-base-300">
+            <Link key={product.id} to={`/product/${product.id}`} className="card card-side bg-base-300 hover:shadow-lg transition-shadow cursor-pointer">
               <figure className="w-30 sm:w-50 shrink-0">
                 <img src={product.imageUrl} alt={product.title} className="h-full object-cover" />
               </figure>
@@ -84,20 +83,14 @@ function WishlistPage() {
                 <p className="text-sm text-base-content/60 line-clamp-1 truncate max-w-50">{product.description}</p>
                 <div className="card-actions justify-end mt-2">
                   <button
-                    onClick={() => navigate(`/product/${product.id}`)}
-                    className="btn btn-ghost btn-sm sm:btn-xs gap-1"
-                  >
-                    <EyeIcon className="size-3 sm:size-5" /> View
-                  </button>
-                  <button
-                    onClick={() => removeFromWishlist(product.id)}
+                    onClick={(e) => { e.preventDefault(); removeFromWishlist(product.id); }}
                     className="btn btn-ghost btn-sm sm:btn-xs text-error gap-1"
                   >
                     <Trash2Icon className="size-3 sm:size-5" /> Remove
                   </button>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

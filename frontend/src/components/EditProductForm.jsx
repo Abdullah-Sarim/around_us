@@ -1,8 +1,10 @@
-import { ArrowLeftIcon, ImageIcon, TypeIcon, FileTextIcon, SaveIcon, DollarSignIcon } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router";
+import { ArrowLeftIcon, ImageIcon, TypeIcon, FileTextIcon, SaveIcon, DollarSignIcon, WifiIcon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+import { ProductPageSkeleton } from "./Skeleton";
 
 function EditProductForm({ product, isPending, isError, onSubmit }) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: product?.title || "",
     description: product?.description || "",
@@ -11,105 +13,146 @@ function EditProductForm({ product, isPending, isError, onSubmit }) {
     isNegotiable: product?.isNegotiable === "true",
   });
 
-  return (
-    <div className="max-w-lg mx-auto">
-      <Link to="/profile" className="btn btn-ghost btn-sm gap-1 mb-4">
-        <ArrowLeftIcon className="size-4" /> Back
-      </Link>
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        title: product.title || "",
+        description: product.description || "",
+        imageUrl: product.imageUrl || "",
+        price: product.price || "",
+        isNegotiable: product.isNegotiable === "true",
+      });
+    }
+  }, [product]);
 
-      <div className="card bg-base-300">
+  if (!product) return <ProductPageSkeleton />;
+
+  return (
+    <div className="max-w-5xl mx-auto space-y-6">
+      <div className="flex items-center justify-between">
+        <button onClick={() => navigate(-1)} className="btn btn-ghost btn-sm gap-2 hover:bg-base-200">
+          <ArrowLeftIcon className="size-5" />
+          <span className="hidden sm:inline">Back</span>
+        </button>
+      </div>
+
+      <div className="card bg-base-300 transition-shadow duration-300 hover:shadow-xl">
         <div className="card-body">
-          <h1 className="card-title">
-            <SaveIcon className="size-5 text-primary" />
+          <h1 className="card-title text-2xl flex items-center gap-2">
+            <SaveIcon className="size-6 text-primary" />
             Edit Product
           </h1>
+          <p className="text-base-content/60 text-sm mb-4">Update your product details</p>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              onSubmit(formData);
-            }}
-            className="space-y-4 mt-4"
-          >
-            <label className="input input-bordered flex items-center gap-2 bg-base-200">
-              <TypeIcon className="size-4 text-base-content/50" />
+          <form onSubmit={(e) => { e.preventDefault(); onSubmit(formData); }} className="space-y-5">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text flex items-center gap-2 mr-4">
+                  <TypeIcon className="size-4" /> Title
+                </span>
+              </label>
               <input
                 type="text"
-                placeholder="Product title"
-                className="grow"
+                placeholder="What are you selling?"
+                className="input input-bordered bg-base-200"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
               />
-            </label>
+            </div>
 
-            <label className="input input-bordered flex items-center gap-2 bg-base-200">
-              <ImageIcon className="size-4 text-base-content/50" />
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text flex items-center gap-2 mr-4">
+                  <ImageIcon className="size-4" /> Image URL
+                </span>
+              </label>
               <input
                 type="url"
-                placeholder="Image URL"
-                className="grow"
+                placeholder="https://example.com/image.jpg"
+                className="input input-bordered bg-base-200"
                 value={formData.imageUrl}
                 onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
                 required
               />
-            </label>
+            </div>
 
             {formData.imageUrl && (
-              <div className="rounded-box overflow-hidden">
+              <div className="rounded-lg overflow-hidden border border-base-content/5">
                 <img
                   src={formData.imageUrl}
                   alt="Preview"
-                  className="w-full h-40 object-cover"
+                  className="h-60 object-cover"
                   onError={(e) => (e.currentTarget.style.display = "none")}
                 />
               </div>
             )}
 
-            <label className="input input-bordered flex items-center gap-2 bg-base-200">
-              <DollarSignIcon className="size-4 text-base-content/50" />
-              <input
-                type="number"
-                placeholder="Price (₹)"
-                className="grow"
-                value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-              />
-            </label>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text flex items-center gap-2 mr-4">
+                  <DollarSignIcon className="size-4" /> Price
+                </span>
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50">₹</span>
+                <input
+                  type="number"
+                  placeholder="0"
+                  className="input input-bordered bg-base-200 pl-8"
+                  value={formData.price}
+                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                />
+              </div>
+            </div>
 
             <div className="form-control">
-              <label className="label cursor-pointer gap-2">
-                <span className="label-text">Price is negotiable</span>
+              <label className="label cursor-pointer justify-start gap-3">
                 <input
                   type="checkbox"
                   className="checkbox checkbox-primary"
                   checked={formData.isNegotiable}
                   onChange={(e) => setFormData({ ...formData, isNegotiable: e.target.checked })}
                 />
+                <span className="label-text">Price is negotiable</span>
               </label>
             </div>
 
             <div className="form-control">
-              <div className="flex items-start gap-2 p-3 rounded-box bg-base-200 border border-base-300">
-                <FileTextIcon className="size-4 text-base-content/50 mt-1" />
-                <textarea
-                  placeholder="Description"
-                  className="grow bg-transparent resize-none focus:outline-none min-h-24"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  required
-                />
-              </div>
+              <label className="label">
+                <span className="label-text flex items-center gap-2 mr-4">
+                  <FileTextIcon className="size-4" /> Description
+                </span>
+              </label>
+              <textarea
+                placeholder="Describe your product..."
+                className="textarea textarea-bordered bg-base-200 h-32"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                required
+              />
             </div>
 
             {isError && (
-              <div role="alert" className="alert alert-error alert-sm">
-                <span>Failed to update. Try again.</span>
+              <div role="alert" className="alert alert-error">
+                <WifiIcon className="size-5" />
+                <span>Failed to update. Retrying automatically...</span>
               </div>
             )}
 
-            <button type="submit" className="btn btn-primary w-full" disabled={isPending}>
-              {isPending ? <span className="loading loading-spinner" /> : "Save Changes"}
+            <button
+              type="submit"
+              className="btn btn-primary btn-lg w-full gap-2 hover:scale-[1.01] transition-transform"
+              disabled={isPending}
+            >
+              {isPending ? (
+                <span className="loading loading-spinner" />
+              ) : (
+                <>
+                  <SaveIcon className="size-5" />
+                  Save Changes
+                </>
+              )}
             </button>
           </form>
         </div>

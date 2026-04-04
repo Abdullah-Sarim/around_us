@@ -200,7 +200,7 @@ function ProductPage() {
             />
             {isSold && (
               <div className="absolute inset-0 flex items-center justify-center bg-base-100/30">
-                <span className="badge badge-success badge-lg">SOLD</span>
+                <span className="badge badge-success badge-md sm:badge-lg">ITEM SOLD</span>
               </div>
             )}
           </figure>
@@ -272,7 +272,7 @@ function ProductPage() {
                     </button>
                   )}
                   {isSold && (
-                    <span className="badge badge-success">Item Sold</span>
+                    <span className="badge badge-success badge-sm sm:badge-md">Sold</span>
                   )}
                 </div>
               </>

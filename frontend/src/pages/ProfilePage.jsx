@@ -128,7 +128,7 @@ const ProfilePage = () => {
         ) : (
           <div className="grid gap-4">
             {products?.map((product) => (
-              <div key={product.id} className="card card-side bg-base-300">
+              <Link key={product.id} to={`/product/${product.id}`} className="card card-side bg-base-300 hover:shadow-lg transition-shadow cursor-pointer">
                 <figure className="w-30  sm:w-50 shrink-0">
                   <img src={product.imageUrl} alt={product.title} className="h-full object-cover" />
                 </figure>
@@ -148,19 +148,13 @@ const ProfilePage = () => {
                   <p className="text-sm text-base-content/60 line-clamp-1 truncate max-w-50">{product.description}</p>
                   <div className="card-actions justify-end mt-2">
                     <button
-                      onClick={() => navigate(`/product/${product.id}`)}
-                      className="btn btn-ghost btn-sm sm:btn-xs gap-1"
-                    >
-                      <EyeIcon className="size-3 sm:size-5" /> View
-                    </button>
-                    <button
-                      onClick={() => navigate(`/edit/${product.id}`)}
+                      onClick={(e) => { e.preventDefault(); navigate(`/edit/${product.id}`); }}
                       className="btn btn-ghost btn-sm sm:btn-xs gap-1"
                     >
                       <EditIcon className="size-3 sm:size-5" /> Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(product.id)}
+                      onClick={(e) => { e.preventDefault(); handleDelete(product.id); }}
                       className="btn btn-ghost btn-sm sm:btn-xs text-error gap-1"
                       disabled={deleteProduct.isPending}
                     >
@@ -168,7 +162,7 @@ const ProfilePage = () => {
                     </button>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
@@ -192,8 +186,8 @@ const ProfilePage = () => {
         ) : (
           <div className="grid gap-4">
             {conversations.map((conv) => (
-              <div key={conv.id} className="card card-side bg-base-300 border-2 border-secondary/30">
-                <figure className="w-24 shrink-0">
+              <Link key={conv.id} to={`/product/${conv.product?.id}`} className="card card-side bg-base-300 border-2 border-secondary/30 hover:shadow-lg transition-shadow cursor-pointer">
+                <figure className="w-30 sm:w-50 shrink-0">
                   <img src={conv.product?.imageUrl} alt={conv.product?.title} className="h-full object-cover" />
                 </figure>
                 <div className="card-body p-4">
@@ -206,14 +200,14 @@ const ProfilePage = () => {
                   </p>
                   <div className="card-actions justify-end mt-2">
                     <button
-                      onClick={() => navigate(`/chat/${conv.id}`)}
+                      onClick={(e) => { e.preventDefault(); navigate(`/chat/${conv.id}`); }}
                       className="btn btn-secondary btn-sm gap-1"
                     >
                       <EyeIcon className="size-3" /> View Chat
                     </button>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

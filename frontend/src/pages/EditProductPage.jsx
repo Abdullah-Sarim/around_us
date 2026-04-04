@@ -1,27 +1,50 @@
 import { useNavigate, useParams, Link } from "react-router";
 import { useAuth } from "@clerk/clerk-react";
 import { useProduct, useUpdateProduct } from "../hooks/useProducts";
-import LoadingSpinner from "../components/LoadingSpinner";
 import EditProductForm from "../components/EditProductForm";
+import { ProductPageSkeleton } from "../components/Skeleton";
+import { WifiIcon, ShieldAlertIcon } from "lucide-react";
 
 function EditProductPage() {
   const { id } = useParams();
   const { userId } = useAuth();
   const navigate = useNavigate();
 
-  const { data: product, isLoading } = useProduct(id);
+  const { data: product, isLoading, error } = useProduct(id);
   const updateProduct = useUpdateProduct();
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading) return <ProductPageSkeleton />;
 
-  if (!product || product.userId !== userId) {
+  if (error || !product) {
     return (
-      <div className="card bg-base-300 max-w-md mx-auto">
-        <div className="card-body items-center text-center">
-          <h2 className="card-title text-error">{!product ? "Not found" : "Access denied"}</h2>
-          <Link to="/" className="btn btn-primary btn-sm">
-            Go Home
-          </Link>
+      <div className="max-w-2xl mx-auto space-y-6">
+        <div className="flex items-center justify-between">
+          <button onClick={() => navigate(-1)} className="btn btn-ghost btn-sm gap-2">
+            <span className="hidden sm:inline">Back</span>
+          </button>
+        </div>
+        <div role="alert" className="alert alert-error">
+          <WifiIcon className="size-5" />
+          <div>
+            <span className="font-semibold">Could not load product</span>
+            <p className="text-xs">Retrying automatically...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (product.userId !== userId) {
+    return (
+      <div className="max-w-5xl mx-auto space-y-6">
+        <div className="flex items-center justify-between">
+          <button onClick={() => navigate(-1)} className="btn btn-ghost btn-sm gap-2">
+            <span className="hidden sm:inline">Back</span>
+          </button>
+        </div>
+        <div role="alert" className="alert alert-warning">
+          <ShieldAlertIcon className="size-5" />
+          <span>You can only edit your own products</span>
         </div>
       </div>
     );
@@ -35,9 +58,7 @@ function EditProductPage() {
       onSubmit={(formData) => {
         updateProduct.mutate(
           { id, ...formData },
-          {
-            onSuccess: () => navigate(`/product/${id}`),
-          }
+          { onSuccess: () => navigate(`/product/${id}`) }
         );
       }}
     />
