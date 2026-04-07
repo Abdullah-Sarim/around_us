@@ -8,24 +8,22 @@ if (!ENV.DATABASE_URL) {
 }
 
 // initialize PostgreSQL connection pool with SSL
+// Use smaller pool for Supabase free tier limits
 const pool = new Pool({ 
   connectionString: ENV.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
   },
-  connectionTimeoutMillis: 10000,
-  idleTimeoutMillis: 30000,
-
-  max: 5,
+  connectionTimeoutMillis: 5000,
+  idleTimeoutMillis: 10000,
+  max: 2,
   keepAlive: true,
 });
 
-// log when first connection is made
 pool.on("connect", () => {
   console.log("Database connected successfully");
 });
 
-// log when an error occurs
 pool.on("error", (err) => {
   console.error("Database connection error:", err);
 });
